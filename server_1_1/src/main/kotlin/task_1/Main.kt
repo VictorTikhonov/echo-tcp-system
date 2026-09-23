@@ -6,7 +6,7 @@ import kotlin.concurrent.thread
 private val logger = KotlinLogging.logger {}
 
 fun main() {
-    val server = TcpServer(8081, 5)
+    val server = TcpServer(8081, 100)
 
     val serverThread = thread(isDaemon = true, name = "tcp-server") {
         server.start()

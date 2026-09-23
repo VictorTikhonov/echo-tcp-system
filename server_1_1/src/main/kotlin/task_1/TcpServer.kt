@@ -3,6 +3,7 @@ package ru.tikhonov.task_1
 import io.github.oshai.kotlinlogging.KotlinLogging
 import io.github.oshai.kotlinlogging.withLoggingContext
 import java.io.IOException
+import java.lang.Thread.sleep
 import java.net.ServerSocket
 import java.net.Socket
 import java.time.Instant
@@ -32,7 +33,7 @@ class TcpServer(
 
         ss.use { socket ->
             logger.info {
-                "TCP server started on port $port"
+                "TCP server started on port: $port, maxConcurrentClients: $maxConcurrentClients"
             }
 
             while (running) {
