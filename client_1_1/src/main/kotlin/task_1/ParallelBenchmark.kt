@@ -15,7 +15,6 @@ class ParallelBenchmark(
     private val requestResults = ConcurrentLinkedQueue<RequestResult>()
 
     fun start(clientCount: Int, messagesPerClient: Int) {
-
         if (clientCount <= 0 || messagesPerClient <= 0) {
             logger.warn { "Parallel benchmark not started" }
             return
@@ -46,14 +45,7 @@ class ParallelBenchmark(
         clientId: Int,
         messagesPerClient: Int,
     ) {
-        val client = try {
-            TcpClient(host, port)
-        } catch (e: Exception) {
-            logger.warn {
-                "client-$clientId: connection failed: ${e.message}"
-            }
-            return
-        }
+        val client = connectWithRetry(clientId) ?: return
 
         client.use { client ->
             repeat(messagesPerClient) {
@@ -63,6 +55,33 @@ class ParallelBenchmark(
                 )
             }
         }
+    }
+
+    private fun connectWithRetry(
+        clientId: Int,
+        attempts: Int = 10,
+        delayMs: Long = 100,
+    ): TcpClient? {
+        var lastError: Exception? = null
+
+        repeat(attempts) { attempt ->
+            try {
+                return TcpClient(host, port)
+            } catch (e: Exception) {
+                lastError = e
+                logger.debug {
+                    "client-$clientId: attempt ${attempt + 1}/$attempts failed: ${e.message}"
+                }
+                if (attempt < attempts - 1) {
+                    Thread.sleep(delayMs)
+                }
+            }
+        }
+
+        logger.warn {
+            "client-$clientId: connection failed after $attempts attempts: ${lastError?.message}"
+        }
+        return null
     }
 
     private fun executeRequest(
@@ -108,8 +127,8 @@ class ParallelBenchmark(
         withLoggingContext(
             "clientId" to clientId.toString(),
             "startTime_ms" to "%.3f".format(Locale.US, result.startTime / 1_000_000.0),
-            "endTime_ms"   to "%.3f".format(Locale.US, result.endTime   / 1_000_000.0),
-            "rtt_ms"       to "%.3f".format(Locale.US, result.rtt       / 1_000_000.0),
+            "endTime_ms" to "%.3f".format(Locale.US, result.endTime / 1_000_000.0),
+            "rtt_ms" to "%.3f".format(Locale.US, result.rtt / 1_000_000.0),
             "serverTime_s" to result.serverTime
         ) {
             requestLogger.info { result.response }
@@ -129,55 +148,24 @@ class ParallelBenchmark(
         }
 
         val totalMessages = results.size
-
         val wallTimeMs = wallNanos / 1_000_000.0
-
-        val throughput = totalMessages / (wallNanos / 1_000_000_000.0)
-
         val totalRTT = results.sumOf { it.rtt }
-
         val maxRTTms = results.maxOf { it.rtt } / 1_000_000.0
-
         val minRTTms = results.minOf { it.rtt } / 1_000_000.0
-
         val totalRTTms = totalRTT / 1_000_000.0
-
         val averageRTTms = totalRTT.toDouble() / totalMessages / 1_000_000.0
-
         val p95ms = calculateP95(results) / 1_000_000.0
 
         withLoggingContext(
             "clients" to clientCount.toString(),
             "messagesPerClient" to messagesPerClient.toString(),
             "totalMessages" to totalMessages.toString(),
-            "wallTime_ms" to "%.3f".format(
-                Locale.US,
-                wallTimeMs
-            ),
-            "throughput_msgPerSec" to "%.1f".format(
-                Locale.US,
-                throughput
-            ),
-            "totalRTT_ms" to "%.3f".format(
-                Locale.US,
-                totalRTTms
-            ),
-            "averageRTT_ms" to "%.3f".format(
-                Locale.US,
-                averageRTTms
-            ),
-            "minRTT_ms" to "%.3f".format(
-                Locale.US,
-                minRTTms
-            ),
-            "maxRTT_ms" to "%.3f".format(
-                Locale.US,
-                maxRTTms
-            ),
-            "p95RTT_ms" to "%.3f".format(
-                Locale.US,
-                p95ms
-            ),
+            "wallTime_ms" to "%.3f".format(Locale.US, wallTimeMs),
+            "totalRTT_ms" to "%.3f".format(Locale.US, totalRTTms),
+            "averageRTT_ms" to "%.3f".format(Locale.US, averageRTTms),
+            "minRTT_ms" to "%.3f".format(Locale.US, minRTTms),
+            "maxRTT_ms" to "%.3f".format(Locale.US, maxRTTms),
+            "p95RTT_ms" to "%.3f".format(Locale.US, p95ms),
         ) {
             summaryLogger.info {
                 "Parallel benchmark completed"
