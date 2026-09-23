@@ -1,6 +1,7 @@
 package ru.tikhonov.task_1
 
 import io.github.oshai.kotlinlogging.KotlinLogging
+import ru.tikhonov.utils.startBlockingBenchmark
 
 private val logger = KotlinLogging.logger {}
 
@@ -25,6 +26,7 @@ private val logger = KotlinLogging.logger {}
 //}
 
 fun main() {
-    ParallelBenchmark(host = "localhost", port = 8081)
-        .start(clientCount = 5, messagesPerClient = 10)
+
+    val benchmark = ParallelBenchmark(host = "localhost", port = 8081)
+    startBlockingBenchmark(benchmark)
 }

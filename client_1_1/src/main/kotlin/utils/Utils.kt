@@ -1,0 +1,51 @@
+package ru.tikhonov.utils
+
+import io.github.oshai.kotlinlogging.KotlinLogging
+import ru.tikhonov.task_1.ParallelBenchmark
+
+private val logger = KotlinLogging.logger {}
+
+
+fun startBlockingBenchmark(benchmark: ParallelBenchmark) {
+
+    while (true) {
+        val clientCount = readPositiveInt("Количество клиентов: ")
+        if (clientCount == null) {
+            logger.warn { "Некорректный ввод, прогон пропущен" }
+            continue
+        }
+
+        val messagesPerClient = readPositiveInt("Сообщений на клиента: ")
+        if (messagesPerClient == null) {
+            logger.warn { "Некорректный ввод, прогон пропущен" }
+            continue
+        }
+
+        logger.info {
+            "\n\n\n$clientCount клиентов по $messagesPerClient сообщений " +
+                    "(Всего ${clientCount * messagesPerClient} сообщений)"
+        }
+
+        benchmark.start(
+            clientCount = clientCount,
+            messagesPerClient = messagesPerClient,
+        )
+
+        if (!askContinue()) {
+            logger.info { "Завершение" }
+            break
+        }
+    }
+}
+
+private fun readPositiveInt(prompt: String): Int? {
+    print(prompt)
+    val line = readlnOrNull()?.trim() ?: return null
+    return line.toIntOrNull()?.takeIf { it > 0 }
+}
+
+private fun askContinue(): Boolean {
+    print("Продолжить? (y/n): ")
+    val answer = readlnOrNull()?.trim()?.lowercase() ?: return false
+    return answer == "y" || answer == "yes" || answer == "д" || answer == "да"
+}

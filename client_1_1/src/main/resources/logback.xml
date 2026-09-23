@@ -37,7 +37,6 @@
                 messages_per_client = %X{messagesPerClient}
                 total_messages = %X{totalMessages}
                 wall_time = %X{wallTime_ms} ms
-                throughput = %X{throughput_msgPerSec} msg/s
                 total = %X{totalRTT_ms} ms
                 avg = %X{averageRTT_ms} ms
                 min = %X{minRTT_ms} ms
@@ -82,6 +81,10 @@
 
     <logger name="Benchmark.Parallel.Request" level="INFO" additivity="false">
         <appender-ref ref="PARALLEL_REQUEST"/>
+    </logger>
+
+    <logger name="ru.tikhonov.task_1.ParallelBenchmark" level="DEBUG" additivity="false">
+        <appender-ref ref="DEFAULT"/>
     </logger>
 
     <!-- ============ ROOT ============ -->
