@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+package ru.tikhonov.task_3;
+
+option java_package = "ru.tikhonov.task_3.proto";
+option java_multiple_files = true;
+
+message EchoRequest {
+  int64 sequence = 1;
+  string message = 2;
+}
+
+message EchoResponse {
+  int64 sequence = 1;
+  string message = 2;
+  double server_time = 3;
+}
+
+service EchoService {
+  rpc EchoStream(stream EchoRequest) returns (stream EchoResponse);
+}
