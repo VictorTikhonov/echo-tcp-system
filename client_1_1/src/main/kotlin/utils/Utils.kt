@@ -2,6 +2,7 @@ package ru.tikhonov.utils
 
 import io.github.oshai.kotlinlogging.KotlinLogging
 import ru.tikhonov.task_1.ParallelBenchmark
+import ru.tikhonov.task_3.GrpcBenchmark
 
 private val logger = KotlinLogging.logger {}
 
@@ -30,6 +31,28 @@ fun startBlockingBenchmark(benchmark: ParallelBenchmark) {
             clientCount = clientCount,
             messagesPerClient = messagesPerClient,
         )
+
+        if (!askContinue()) {
+            logger.info { "Завершение" }
+            break
+        }
+    }
+}
+
+
+fun startGrpcBenchmark(benchmark: GrpcBenchmark) {
+    while (true) {
+        val messagesPerClient = readPositiveInt("Количество сообщений в потоке: ")
+        if (messagesPerClient == null) {
+            logger.warn { "Некорректный ввод, прогон пропущен" }
+            continue
+        }
+
+        logger.info {
+            "\n\n\nПоток из $messagesPerClient сообщений"
+        }
+
+        benchmark.start(messagesPerClient)
 
         if (!askContinue()) {
             logger.info { "Завершение" }
