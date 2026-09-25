@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
 
-    <!-- ============ APPENDERS ============ -->
-
-    <!-- Сводка одиночного бенчмарка -->
     <appender name="SUMMARY" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
             <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger
@@ -16,19 +13,17 @@
         </encoder>
     </appender>
 
-    <!-- Каждый запрос одиночного бенчмарка -->
     <appender name="REQUEST" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
             <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger
                 message = %msg
-                start = %X{startTime} ms
+                start = %X{startTime_ms} ms
                 end = %X{endTime_ms} ms
                 rtt = %X{rtt_ms} ms
-                server_time = %X{serverTime_ms} ms%n%n</pattern>
+                server_time = %X{serverTime_s} s%n%n</pattern>
         </encoder>
     </appender>
 
-    <!-- Сводка параллельного бенчмарка -->
     <appender name="PARALLEL_SUMMARY" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
             <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger
@@ -45,7 +40,6 @@
         </encoder>
     </appender>
 
-    <!-- Каждый запрос параллельного бенчмарка -->
     <appender name="PARALLEL_REQUEST" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
             <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger
@@ -58,36 +52,53 @@
         </encoder>
     </appender>
 
-    <!-- Всё остальное -->
+    <appender name="GRPC_SUMMARY" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger
+                message = %msg
+                sent = %X{sent}
+                received = %X{received}
+                total_time = %X{totalTime_ms} ms
+                avg_rtt = %X{avgRtt_ms} ms
+                throughput = %X{throughput_msgPerSec} msg/s
+                sequence_ok = %X{sequenceOk}
+                content_ok = %X{contentOk}
+                server_time_ok = %X{serverTimeOk}%n%n</pattern>
+        </encoder>
+    </appender>
+
     <appender name="DEFAULT" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
             <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger -- %msg%n</pattern>
         </encoder>
     </appender>
 
-    <!-- ============ LOGGERS ============ -->
-
+    <!-- Сводки: INFO (1 запись в конце) -->
     <logger name="Benchmark.Summary" level="INFO" additivity="false">
         <appender-ref ref="SUMMARY"/>
-    </logger>
-
-    <logger name="Benchmark.Request" level="INFO" additivity="false">
-        <appender-ref ref="REQUEST"/>
     </logger>
 
     <logger name="Benchmark.Parallel.Summary" level="INFO" additivity="false">
         <appender-ref ref="PARALLEL_SUMMARY"/>
     </logger>
 
-    <logger name="Benchmark.Parallel.Request" level="INFO" additivity="false">
+    <logger name="Benchmark.Grpc.Summary" level="INFO" additivity="false">
+        <appender-ref ref="GRPC_SUMMARY"/>
+    </logger>
+
+    <!-- Per-request: WARN (отключено для замеров) -->
+    <logger name="Benchmark.Request" level="WARN" additivity="false">
+        <appender-ref ref="REQUEST"/>
+    </logger>
+
+    <logger name="Benchmark.Parallel.Request" level="WARN" additivity="false">
         <appender-ref ref="PARALLEL_REQUEST"/>
     </logger>
 
+    <!-- Retry TCP-клиента: DEBUG -->
     <logger name="ru.tikhonov.task_1.ParallelBenchmark" level="DEBUG" additivity="false">
         <appender-ref ref="DEFAULT"/>
     </logger>
-
-    <!-- ============ ROOT ============ -->
 
     <root level="INFO">
         <appender-ref ref="DEFAULT"/>
