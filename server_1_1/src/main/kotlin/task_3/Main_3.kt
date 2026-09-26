@@ -11,7 +11,7 @@ fun main() {
 
     val server = ServerBuilder
         .forPort(port)
-        .addService(EchoServiceImpl())
+        .addService(GrpcServer())
         .build()
         .start()
 

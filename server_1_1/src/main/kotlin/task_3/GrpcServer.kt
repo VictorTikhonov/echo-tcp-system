@@ -6,7 +6,7 @@ import ru.tikhonov.task_3.proto.EchoRequest
 import ru.tikhonov.task_3.proto.EchoResponse
 import ru.tikhonov.task_3.proto.EchoServiceGrpc
 
-class EchoServiceImpl : EchoServiceGrpc.EchoServiceImplBase() {
+class GrpcServer : EchoServiceGrpc.EchoServiceImplBase() {
 
     override fun echoStream(
         responseObserver: StreamObserver<EchoResponse>,

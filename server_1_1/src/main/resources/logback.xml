@@ -18,7 +18,7 @@
 
     <logger name="ru.tikhonov.task_1.TcpServer" level="WARN"/>
 
-    <logger name="ru.tikhonov.task_3.EchoServiceImpl" level="WARN"/>
+    <logger name="ru.tikhonov.task_3.GrpcServer" level="WARN"/>
 
     <logger name="Benchmark.Server.Response" level="WARN" additivity="false">
         <appender-ref ref="SERVER_RESPONSE"/>
