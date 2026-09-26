@@ -113,7 +113,7 @@
 
     <!-- ======================= LOGGERS ======================= -->
 
-    <!-- Сводки: INFO (1 запись в конце прогона) -->
+    <!-- Сводки: INFO -->
     <logger name="Benchmark.Summary" level="INFO" additivity="false">
         <appender-ref ref="SUMMARY"/>
     </logger>
@@ -130,15 +130,15 @@
         <appender-ref ref="NETTY_SUMMARY"/>
     </logger>
 
-    <logger name="Benchmark.Request" level="WARN" additivity="false">
+    <logger name="Benchmark.Request" level="INFO" additivity="false">
         <appender-ref ref="REQUEST"/>
     </logger>
 
-    <logger name="Benchmark.Parallel.Request" level="WARN" additivity="false">
+    <logger name="Benchmark.Parallel.Request" level="INFO" additivity="false">
         <appender-ref ref="PARALLEL_REQUEST"/>
     </logger>
 
-    <logger name="Benchmark.Netty.Request" level="WARN" additivity="false">
+    <logger name="Benchmark.Netty.Request" level="INFO" additivity="false">
         <appender-ref ref="NETTY_REQUEST"/>
     </logger>
 

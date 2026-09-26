@@ -16,11 +16,15 @@
         </encoder>
     </appender>
 
-    <logger name="ru.tikhonov.task_1.TcpServer" level="WARN"/>
+    <!-- Task 1: TCP blocking -->
+    <logger name="ru.tikhonov.task_1.TcpServer" level="INFO"/>
 
-    <logger name="ru.tikhonov.task_3.GrpcServer" level="WARN"/>
+    <!-- Task 3: gRPC -->
+    <logger name="ru.tikhonov.task_3.GrpcServer" level="INFO"/>
+    <logger name="ru.tikhonov.task_3.EchoServiceImpl" level="INFO"/>
 
-    <logger name="Benchmark.Server.Response" level="WARN" additivity="false">
+    <!-- Per-response TCP и Netty -->
+    <logger name="Benchmark.Server.Response" level="INFO" additivity="false">
         <appender-ref ref="SERVER_RESPONSE"/>
     </logger>
 
