@@ -24,6 +24,9 @@ dependencies {
     // Protobuf
     implementation("com.google.protobuf:protobuf-kotlin:4.28.2")
 
+    // Netty
+    implementation("io.netty:netty-all:4.1.115.Final")
+
     compileOnly("javax.annotation:javax.annotation-api:1.3.2")
 }
 
