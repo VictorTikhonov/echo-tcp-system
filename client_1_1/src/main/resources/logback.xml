@@ -142,7 +142,7 @@
         <appender-ref ref="NETTY_REQUEST"/>
     </logger>
 
-    <logger name="ru.tikhonov.task_1.ParallelBenchmark" level="DEBUG" additivity="false">
+    <logger name="ru.tikhonov.benchmark.BlockingBenchmark" level="DEBUG" additivity="false">
         <appender-ref ref="DEFAULT"/>
     </logger>
 

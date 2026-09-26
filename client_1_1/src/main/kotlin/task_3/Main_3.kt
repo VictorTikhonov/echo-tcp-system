@@ -1,5 +1,6 @@
 package ru.tikhonov.task_3
 
+import ru.tikhonov.benchmark.GrpcBenchmark
 import ru.tikhonov.utils.startGrpcBenchmark
 
 

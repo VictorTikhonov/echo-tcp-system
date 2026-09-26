@@ -1,10 +1,11 @@
-package ru.tikhonov.task_2
+package ru.tikhonov.benchmark
 
 import io.github.oshai.kotlinlogging.KotlinLogging
 import io.github.oshai.kotlinlogging.withLoggingContext
 import io.netty.channel.EventLoopGroup
 import io.netty.channel.nio.NioEventLoopGroup
-import ru.tikhonov.task_1.RequestResult
+import ru.tikhonov.model.RequestResult
+import ru.tikhonov.task_2.NettyClient
 import java.util.Locale
 import java.util.concurrent.ConcurrentLinkedQueue
 import kotlin.concurrent.thread
@@ -13,7 +14,7 @@ import kotlin.math.ceil
 class NettyBenchmark(
     private val host: String,
     private val port: Int,
-) {
+) : Benchmark {
 
     // Одна EventLoop-группа на весь бенчмарк.
     // Если бы каждый клиент создавал свою — получилось бы "поток на соединение",
@@ -26,7 +27,7 @@ class NettyBenchmark(
     /**
      * Запускает [clientCount] клиентов, каждый отправляет [messagesPerClient] сообщений.
      */
-    fun start(
+    override fun start(
         clientCount: Int,
         messagesPerClient: Int,
     ) {
