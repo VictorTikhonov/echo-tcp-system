@@ -16,12 +16,10 @@ class NettyBenchmark(
     private val port: Int,
 ) : Benchmark {
 
-    // Одна EventLoop-группа на весь бенчмарк.
-    // Если бы каждый клиент создавал свою — получилось бы "поток на соединение",
-    // что прямо запрещено требованием 2.2.
+    // Одна EventLoop-группа на весь бенчмарк
     private val sharedGroup: EventLoopGroup = NioEventLoopGroup()
 
-    // Потокобезопасная очередь результатов: пишут все client-потоки.
+    // Потокобезопасная очередь результатов: пишут все client-потоки
     private val requestResults = ConcurrentLinkedQueue<RequestResult>()
 
     /**
@@ -40,9 +38,9 @@ class NettyBenchmark(
 
         val wallStart = System.nanoTime()
 
-        // Каждый клиент — свой benchmark-поток.
-        // Потоки нужны, чтобы запустить N клиентов параллельно.
-        // Внутри они делят один sharedGroup (event loop).
+        // Каждый клиент — свой benchmark-поток
+        // Потоки нужны, чтобы запустить N клиентов параллельно
+        // Внутри они делят один sharedGroup (event loop)
         val threads = (1..clientCount).map { clientId ->
             thread(name = "netty-client-$clientId") {
                 runClient(
@@ -52,7 +50,7 @@ class NettyBenchmark(
             }
         }
 
-        // Ждём завершения всех клиентов.
+        // Ждём завершения всех клиентов
         threads.forEach { it.join() }
 
         val wallEnd = System.nanoTime()
@@ -114,7 +112,7 @@ class NettyBenchmark(
         val response = client.sendMessage(message)
         val endTime = System.nanoTime()
 
-        // Сервер обязан вернуть ECHO: <наше сообщение>.
+        // Сервер обязан вернуть ECHO: <сообщение>.
         if (!response.startsWith("ECHO: $message")) {
             throw RuntimeException("Invalid response: $response")
         }
@@ -129,7 +127,7 @@ class NettyBenchmark(
         requestResults.add(result)
     }
 
-    /** 95-й перцентиль RTT. */
+    /** 95-й перцентиль RTT */
     private fun calculateP95(results: List<RequestResult>): Long {
         val sortedRtt = results.map { it.rtt }.sorted()
         val index = ceil(sortedRtt.size * 0.95).toInt() - 1
@@ -152,7 +150,7 @@ class NettyBenchmark(
     }
 
     /**
-     * Сводная статистика: wall time, throughput, avg/min/max/p95 RTT.
+     * Сводная статистика: wall time, throughput, avg/min/max/p95 RTT
      */
     private fun logBenchmarkSummary(
         clientCount: Int,
@@ -166,7 +164,7 @@ class NettyBenchmark(
             return
         }
 
-        // Проверка полноты: если клиент упал, часть сообщений потеряна.
+        // Проверка полноты: если клиент упал, часть сообщений потеряна
         val expectedMessages = clientCount * messagesPerClient
         if (results.size != expectedMessages) {
             logger.warn {
