@@ -1,7 +1,8 @@
-package ru.tikhonov.task_3
+package ru.tikhonov.benchmark
 
 import io.github.oshai.kotlinlogging.KotlinLogging
 import io.github.oshai.kotlinlogging.withLoggingContext
+import ru.tikhonov.task_3.GrpcClient
 import java.util.Locale
 
 class GrpcBenchmark(

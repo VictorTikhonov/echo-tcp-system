@@ -11,7 +11,7 @@ fun main() {
 
     val server = ServerBuilder
         .forPort(port)
-        .addService(EchoServiceImpl())
+        .addService(GrpcServer())
         .build()
         .start()
 
@@ -23,8 +23,6 @@ fun main() {
 
     logger.info { "Press ENTER to stop the server" }
     readln()
-
-    logger.info { "Stopping..." }
     server.shutdown()
     server.awaitTermination()
     serverThread.join()

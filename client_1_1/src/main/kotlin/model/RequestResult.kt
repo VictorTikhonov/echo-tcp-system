@@ -1,4 +1,4 @@
-package ru.tikhonov.task_1
+package ru.tikhonov.model
 
 class RequestResult(
     val startTime: Long,

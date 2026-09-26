@@ -1,13 +1,13 @@
 package ru.tikhonov.utils
 
 import io.github.oshai.kotlinlogging.KotlinLogging
-import ru.tikhonov.task_1.ParallelBenchmark
-import ru.tikhonov.task_3.GrpcBenchmark
+import ru.tikhonov.benchmark.Benchmark
+import ru.tikhonov.benchmark.GrpcBenchmark
 
 private val logger = KotlinLogging.logger {}
 
 
-fun startBlockingBenchmark(benchmark: ParallelBenchmark) {
+fun startBenchmark(benchmark: Benchmark) {
 
     while (true) {
         val clientCount = readPositiveInt("Количество клиентов: ")
@@ -38,7 +38,6 @@ fun startBlockingBenchmark(benchmark: ParallelBenchmark) {
         }
     }
 }
-
 
 fun startGrpcBenchmark(benchmark: GrpcBenchmark) {
     while (true) {

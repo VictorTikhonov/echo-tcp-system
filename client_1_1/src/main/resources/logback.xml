@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
 
+    <!-- ======================= APPENDERS ======================= -->
+
     <appender name="SUMMARY" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
             <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger
@@ -9,7 +11,8 @@
                 min = %X{minRTT_ms} ms
                 total = %X{totalRTT_ms} ms
                 avg = %X{averageRTT_ms} ms
-                p95 = %X{p95_ms} ms%n</pattern>
+                p95 = %X{p95_ms} ms%n
+            </pattern>
         </encoder>
     </appender>
 
@@ -20,7 +23,8 @@
                 start = %X{startTime_ms} ms
                 end = %X{endTime_ms} ms
                 rtt = %X{rtt_ms} ms
-                server_time = %X{serverTime_s} s%n%n</pattern>
+                server_time = %X{serverTime_s} s%n%n
+            </pattern>
         </encoder>
     </appender>
 
@@ -36,7 +40,8 @@
                 avg = %X{averageRTT_ms} ms
                 min = %X{minRTT_ms} ms
                 max = %X{maxRTT_ms} ms
-                p95 = %X{p95RTT_ms} ms%n%n</pattern>
+                p95 = %X{p95RTT_ms} ms%n%n
+            </pattern>
         </encoder>
     </appender>
 
@@ -48,7 +53,8 @@
                 start = %X{startTime_ms} ms
                 end = %X{endTime_ms} ms
                 rtt = %X{rtt_ms} ms
-                server_time = %X{serverTime_s} s%n%n</pattern>
+                server_time = %X{serverTime_s} s%n%n
+            </pattern>
         </encoder>
     </appender>
 
@@ -63,7 +69,39 @@
                 throughput = %X{throughput_msgPerSec} msg/s
                 sequence_ok = %X{sequenceOk}
                 content_ok = %X{contentOk}
-                server_time_ok = %X{serverTimeOk}%n%n</pattern>
+                server_time_ok = %X{serverTimeOk}%n%n
+            </pattern>
+        </encoder>
+    </appender>
+
+    <appender name="NETTY_SUMMARY" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger
+                message = %msg
+                clients = %X{clients}
+                messages_per_client = %X{messagesPerClient}
+                total_messages = %X{totalMessages}
+                wall_time = %X{wallTime_ms} ms
+                throughput = %X{throughput_msgPerSec} msg/s
+                total = %X{totalRTT_ms} ms
+                avg = %X{averageRTT_ms} ms
+                min = %X{minRTT_ms} ms
+                max = %X{maxRTT_ms} ms
+                p95 = %X{p95RTT_ms} ms%n%n
+            </pattern>
+        </encoder>
+    </appender>
+
+    <appender name="NETTY_REQUEST" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger
+                message = %msg
+                client = %X{clientId}
+                start = %X{startTime_ms} ms
+                end = %X{endTime_ms} ms
+                rtt = %X{rtt_ms} ms
+                server_time = %X{serverTime_s} s%n%n
+            </pattern>
         </encoder>
     </appender>
 
@@ -73,7 +111,9 @@
         </encoder>
     </appender>
 
-    <!-- Сводки: INFO (1 запись в конце) -->
+    <!-- ======================= LOGGERS ======================= -->
+
+    <!-- Сводки: INFO -->
     <logger name="Benchmark.Summary" level="INFO" additivity="false">
         <appender-ref ref="SUMMARY"/>
     </logger>
@@ -86,19 +126,27 @@
         <appender-ref ref="GRPC_SUMMARY"/>
     </logger>
 
-    <!-- Per-request: WARN (отключено для замеров) -->
-    <logger name="Benchmark.Request" level="WARN" additivity="false">
+    <logger name="Benchmark.Netty.Summary" level="INFO" additivity="false">
+        <appender-ref ref="NETTY_SUMMARY"/>
+    </logger>
+
+    <logger name="Benchmark.Request" level="INFO" additivity="false">
         <appender-ref ref="REQUEST"/>
     </logger>
 
-    <logger name="Benchmark.Parallel.Request" level="WARN" additivity="false">
+    <logger name="Benchmark.Parallel.Request" level="INFO" additivity="false">
         <appender-ref ref="PARALLEL_REQUEST"/>
     </logger>
 
-    <!-- Retry TCP-клиента: DEBUG -->
-    <logger name="ru.tikhonov.task_1.ParallelBenchmark" level="DEBUG" additivity="false">
+    <logger name="Benchmark.Netty.Request" level="INFO" additivity="false">
+        <appender-ref ref="NETTY_REQUEST"/>
+    </logger>
+
+    <logger name="ru.tikhonov.benchmark.BlockingBenchmark" level="DEBUG" additivity="false">
         <appender-ref ref="DEFAULT"/>
     </logger>
+
+    <!-- ======================= ROOT ======================= -->
 
     <root level="INFO">
         <appender-ref ref="DEFAULT"/>

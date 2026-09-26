@@ -1,20 +1,25 @@
-package ru.tikhonov.task_1
+package ru.tikhonov.benchmark
 
 import io.github.oshai.kotlinlogging.KotlinLogging
 import io.github.oshai.kotlinlogging.withLoggingContext
+import ru.tikhonov.model.RequestResult
+import ru.tikhonov.task_1.TcpClient
 import java.util.Locale
 import java.util.concurrent.ConcurrentLinkedQueue
 import kotlin.concurrent.thread
 import kotlin.math.ceil
 
-class ParallelBenchmark(
+class BlockingBenchmark(
     private val host: String,
     private val port: Int,
-) {
+) : Benchmark {
 
     private val requestResults = ConcurrentLinkedQueue<RequestResult>()
 
-    fun start(clientCount: Int, messagesPerClient: Int) {
+     override fun start(
+        clientCount: Int,
+        messagesPerClient: Int
+    ) {
         if (clientCount <= 0 || messagesPerClient <= 0) {
             logger.warn { "Parallel benchmark not started" }
             return
